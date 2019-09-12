@@ -2,7 +2,6 @@
 @import url("https://fonts.googleapis.com/css?family=Asap:400,600&display=swap");
 /* string import */
 @import "./index.css";
-@import "./blog.css";
 @import "./profile.css";
 
 @font-face {
@@ -16,11 +15,16 @@
 .sfFont {
   font-family: "SF Mono Regular", sans-serif;
 }
-
+.highlight {
+  color: var(--blue);
+  background-color: #dde6ff;
+  padding: 3px;
+}
 /* Root Colors */
 :root {
   --pink: #ff49df;
   --lightgrey: #f7f7f7;
+  --blue: #007eff;
 }
 /* Font Links */
 /* Normalize and Config */
@@ -35,8 +39,8 @@ h3,
 h4,
 h5,
 h6 {
-  padding: 10px 0;
-  margin: 2px 0;
+  margin: 10px 0;
+  text-transform: capitalize;
 }
 h1 {
   font-size: 1.6em;
@@ -63,11 +67,15 @@ h6 {
   color: #232323;
 }
 p {
-  font-size: 1em;
+  font-size: 0.9em;
+  color: #505050;
   margin: 10px 0;
 }
 a {
   text-decoration: none;
+}
+a.link {
+  color: inherit;
 }
 a:active {
   color: inherit;
@@ -79,30 +87,74 @@ a:visited {
 a:hover {
   opacity: 0.8;
 }
-form input:focus,
-form button:focus {
+input:focus,
+button:focus,
+textarea:focus {
   outline: none;
 }
-button.btnlink {
+label {
+  width: 100%;
+  display: block;
+  margin: 15px 0 3px;
+  font-size: 0.9em;
+  color: #404040;
+}
+
+input.btnlink:hover {
+  opacity: 0.8;
+}
+textarea {
+  font: inherit;
+  max-width: 100%;
+  max-height: 200px;
+  min-height: 4pc;
+}
+input,
+textarea {
+  background-color: white;
+  border: 1px solid #989898;
+  border-radius: 3px;
+  padding: 8px;
+  font-size: 0.9em;
+  width: 100%;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box; /* Firefox, other Gecko */
+  box-sizing: border-box; /* Opera/IE 8+ */
+}
+input:focus,
+textarea:focus {
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.09);
+  opacity: 1;
+}
+.btnlink {
+  display: inline-block;
   font-family: "SF Mono Regular";
   font-size: 0.7em;
   color: #007eff;
   background: white;
-  border: 1px solid #ffffff;
+  border: none;
   border-radius: 3px;
   cursor: pointer;
   text-transform: uppercase;
 }
-button.bluelink {
+.bluelink {
   color: white;
   background: #43c2ff;
   border: 1px solid #007ed8;
   border-radius: 3px;
 }
+.submitBtn {
+  padding: 10px;
+}
+.submitBtn:hover {
+  opacity: 0.8;
+}
 button {
+  display: inline-block;
   padding: 0;
 }
-button a {
+button a,
+button input {
   color: inherit;
   padding: 2px 5px;
   display: inline-block;
@@ -173,27 +225,19 @@ nav .navigation ul.nav-list li a {
   margin: 10px auto;
   padding: 8px;
   font-size: 14px;
+  border-radius: 5px;
 }
 .err_msg {
-  background: #ffbaa5;
-  border: 1px solid #ff9679;
-  color: #ce4b2c;
-  border-radius: 4px;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  background: #ffe9e2;
+  color: #e02c2c;
 }
 .suc_msg {
-  background: #b0f1a0;
-  border: 1px solid #76d000;
-  color: #33a717;
-  border-radius: 4px;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  background: #e5f3ff;
+  color: #1eace2;
 }
 .info_msg {
-  background: #ffe7a5;
-  border: 1px solid #e6bf00;
-  color: #9a7612;
-  border-radius: 4px;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  background: #fff4e8;
+  color: #c58800;
 }
 
 /* Main CSS */
@@ -213,4 +257,8 @@ nav .navigation ul.nav-list li a {
   margin: 10px 0;
   background-color: #f3f3f3;
   border-radius: 5px;
+}
+
+.greybox h3 {
+  margin-top: 0px;
 }
