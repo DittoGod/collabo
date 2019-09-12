@@ -1,25 +1,39 @@
 var express = require("express");
+var mongoose = require("mongoose");
 var router = express.Router({ mergeParams: true });
 
 var Project = require("../models/project"),
   User = require("../models/user"),
+  Updates = require("../models/updates"),
   Task = require("../models/task"),
   auth = require("../config/auth"); // connect to auth file to authorize.
 
 // Landing page
-router.get("/", auth.userIsLogged, function(req, res) {
-  Project.find({}, function(err, projects) {
-    if (err) {
-      console.log("Landing page error");
-    } else {
-      res.render("index", { projects: projects, name: req.user.name }); //get variable to output in blog.ejs page
-    }
-  });
+router.get("/", auth.userIsLogged, async function(req, res) {
+  try {
+    Project.find({})
+      .populate({
+        path: "updates",
+        options: { sort: { _id: -1 } }
+      }) // null, { isRead: false } //shows if isRead is false
+      .exec(async function(err, allProjects) {
+        if (err) {
+          console.log("Landing page error");
+        } else {
+          res.render("index", {
+            projects: allProjects,
+            name: req.user.name
+          });
+        }
+      });
+  } catch (err) {
+    res.redirect("back");
+  }
 });
 
 //New Show Post Form
 router.get("/new", auth.userIsLogged, function(req, res) {
-  res.render("projects/new");
+  res.render("projects/new", { user: req.user });
 });
 
 //NEW Project Create
@@ -37,15 +51,68 @@ router.post("/", auth.userIsLogged, function(req, res) {
     author: author
   };
   //Create a new blog and save to database
-  Project.create(newProject, function(err, newlyCreated) {
+  Project.create(newProject, function(err, newProject) {
     if (err) {
-      console.log("Trouble creating project error");
+      console.log(err);
     } else {
-      res.redirect("/"); //redirect back to campgrounds page
+      let newUpdate = {
+        name: author.name,
+        projectName: title,
+        projectId: newProject._id
+      };
+      Updates.create(newUpdate, function(err, newlyUpdated) {
+        if (err) {
+          console.log("Error uploading newTask error.");
+        } else {
+          newlyUpdated.save();
+          newProject.updates.push(newlyUpdated);
+          newProject.save();
+          //successfully added data to update
+          // NOTE: This will need to be refactored/modified for better error handling
+          req.flash(
+            "success_msg",
+            "Your new project has been created, check it out!"
+          );
+          res.redirect("/"); //redirect back to campgrounds page
+        }
+      });
     }
   });
 });
 
+router.post("/update/:id", auth.userIsLogged, function(req, res) {
+  let newUpdate = {
+    name: "New",
+    projectName: "Application Tech"
+  };
+  User.findById(req.params.id, function(err, foundUser) {
+    if (err) {
+      console.log("user ID not found error. / unknown error");
+      res.redirect("/");
+    } else {
+      Updates.create(newUpdate, function(err, newlyUpdated) {
+        if (err) {
+          console.log("Error uploading newTask error.");
+        } else {
+          newlyUpdated.save();
+          foundUser.updates.push(newlyUpdated);
+          foundUser.save();
+          res.redirect("/"); //redirect back home
+        }
+      });
+    }
+  });
+});
+router.get("/seen/:id", auth.userIsLogged, async function(req, res) {
+  try {
+    let updates = await Updates.findById(req.params.id);
+    updates.isRead = true;
+    updates.save();
+    res.redirect("/p/" + updates.projectId);
+  } catch {
+    console.log(err); // needs err handler
+  }
+});
 //SHOW project page
 router.get("/p/:id", auth.userIsLogged, function(req, res) {
   Project.findById(req.params.id)
