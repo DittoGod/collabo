@@ -9,7 +9,7 @@ var UserSchema = new mongoose.Schema({
   },
   profileImg: {
     type: String,
-    default: "defaultProImage.png"
+    required: true
   },
   email: {
     type: String,
@@ -21,12 +21,6 @@ var UserSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now
-  },
-  readProject: {
-    projectId: { type: String },
-    isRead: {
-      type: Boolean
-    }
   }
 });
 

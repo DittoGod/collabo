@@ -4,6 +4,7 @@
     <title>collabO - Team Up</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="/css/tooltip/simptip.css" />
 
     <link
       rel="stylesheet"
@@ -34,9 +35,13 @@
         </div>
       <div class="navigation">
         <ul class="nav-list">
-          <li><a href="/">Home</a></li>
-          <li><a href="/user/login">Login<em class="sfFont">(Beta)</em></a></li>
-          <li><a href="/user/logout">Logout</a></li>
+          <% if(currentUser){ %>
+            <li><a href="/">Home</a></li>
+            <li><a href="/profile/<%=currentUser._id%>">Profile</a></li>
+            <li><a href="/user/logout">Logout</a></li>
+          <% }else{ %>
+            <li><a href="/user/login">Login</a></li>
+          <% } %>
         </ul>
       </div>
     </nav>
